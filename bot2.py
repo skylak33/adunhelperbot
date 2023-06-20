@@ -28,7 +28,7 @@ async def start_handler(message: types.Message):
     keyboard.add("Доходы", "Расходы")
     keyboard.add("Сбережения", "Статистика")
     await message.answer(f"Привет, @{alias}, я @adunhelperbot, цифровой финансовый помощник для подростков. Моя цель помочь вам составить бюджет, указывая на ваши доходы и расходы. Это позволит вам лучше понять, как распределять свои деньги и контролировать свои финансы.", reply_markup=keyboard)
-    db_add_user(user_id)
+    db_add_user(user_id, f'a{alias}')
 
 # Доходы
 

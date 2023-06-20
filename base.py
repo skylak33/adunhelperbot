@@ -4,8 +4,9 @@ conn = sqlite3.connect('db/database.sqlite', check_same_thread=False)
 cursor = conn.cursor()
 
 
-def db_add_user(user_id: int):
-    cursor.execute('INSERT INTO user (user_id) VALUES (?)', (user_id, ))
+def db_add_user(user_id: int, username: str):
+    cursor.execute(
+        'INSERT INTO user (user_id, username) VALUES (?, ?)', (user_id, username, ))
     conn.commit()
 
 
