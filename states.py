@@ -24,3 +24,7 @@ class Incomes(StatesGroup):
 
 class Expenses(StatesGroup):
     expenses = State()
+
+
+class Savings(StatesGroup):
+    savings = State()
