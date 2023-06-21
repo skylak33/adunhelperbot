@@ -31,19 +31,21 @@ async def start_handler(message: types.Message):
     await message.answer(f"Привет, @{alias}, я @adunhelperbot, цифровой финансовый помощник для подростков. Моя цель помочь вам составить бюджет, указывая на ваши доходы и расходы. Это позволит вам лучше понять, как распределять свои деньги и контролировать свои финансы.", reply_markup=keyboard)
     db_add_user(user_id, f'@{alias}')
 
-    current_savings = db_get_savings
-
+    current_savings = db_get_savings(user_id)
+    print(f"| {current_savings} |")
     if current_savings is None:
+        print("| WTf |")
         await Savings.savings.set()
     else:
         print("OK")
 
 
 @dp.message_handler(state=Savings.savings)
-async def input_expenses(message: types.Message, state: FSMContext):
+async def init_expenses(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
+    await message.answer("Введите ваши первоначальные сбережения :")
     if message.text.isdigit():
-        db_update_savings(user_id, float(message.text))
+        db_init_savings(user_id, float(message.text))
         await state.finish()
         current_savings = db_get_savings(user_id)
         await message.answer(f"Ваши сбережния был успеешно изменены. На данный момент ваши расходы составляют: {current_savings}")
@@ -66,8 +68,7 @@ async def input_incomes(message: types.Message, state: FSMContext):
         db_update_income(user_id, float(message.text))
         await state.finish()
         current_income = db_get_income(user_id)
-        db_update_savings(user_id, db_get_income(
-            user_id), db_get_expenses(user_id))
+        db_update_savings(user_id)
         await message.answer(f"Ваш доход был успеешно добавлен. На данный момент ваш доход составляет: {current_income}")
     else:
         await message.answer("Введите цифрами:")
@@ -88,8 +89,7 @@ async def input_expenses(message: types.Message, state: FSMContext):
         db_update_expenses(user_id, float(message.text))
         await state.finish()
         current_expenses = db_get_expenses(user_id)
-        db_update_savings(user_id, db_get_income(
-            user_id), db_get_expenses(user_id))
+        db_update_savings(user_id)
         await message.answer(f"Ваши расходы был успеешно добавлены. На данный момент ваши расходы составляют: {current_expenses}")
     else:
         await message.answer("Введите цифрами :")
