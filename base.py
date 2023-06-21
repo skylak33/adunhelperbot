@@ -22,8 +22,7 @@ def db_update_expenses(user_id: int, expenses: float):
     conn.commit()
 
 
-def db_update_savings(user_id: int, income: float, expenses: float):
-    print(income, expenses, user_id)
+def db_update_savings(user_id: int):
     cursor.execute(
         "UPDATE user SET savings = savings + (?) - (?)  WHERE user_id = ?", (income, expenses, user_id,))
     conn.commit()
