@@ -26,7 +26,6 @@ async def start_handler(message: types.Message):
     alias = message.from_user.username
     logging.info(f'{user_id} {alias} {time.asctime()}')
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add("Доходы", "Расходы", "Сбережения")
     keyboard.add("Советы", "Способы заработка")
     keyboard.add("Проверка финансовой грамотности")
     await message.answer(
