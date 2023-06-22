@@ -73,12 +73,41 @@ async def start_handler_1(message: types.Message):
         types.InlineKeyboardButton(text="220", callback_data="Да"),
         types.InlineKeyboardButton(text="22", callback_data="Нет"),
         types.InlineKeyboardButton(text="228", callback_data="Нет"),
-        types.InlineKeyboardButton(text="2200", callback_data="Нет")
+        types.InlineKeyboardButton(text="2200", callback_data="Нет"),
+        types.InlineKeyboardButton(text="Еще вопрос", callback_data="Еще1")
+
     ]
-    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
     await message.answer("В банк был положен вклад под 10% годовых. Через год, после начисления процентов, вкладчик снял со счета 2000 рублей, а еще через год (опять после начисления процентов) снова внес 2000 рублей. Вследствие этих действий через три года со времени открытия вклада вкладчик получил сумму меньше запланированной (если бы не было промежуточных операций со вкладом). На сколько рублей меньше запланированной суммы он получил?", reply_markup=keyboard)
 
+
+@dp.callback_query_handler(text="Да")
+async def send_random_value(call: types.CallbackQuery):
+    await call.message.answer("Верно.")
+
+
+@dp.callback_query_handler(text="Нет")
+async def send_random_value(call: types.CallbackQuery):
+    await call.message.answer("Неверно. ")
+    return
+
+
+@dp.callback_query_handler(text="Еще1")
+async def send_random_value(call: types.CallbackQuery):
+    lenv = statistic.lenv
+    number = randint(0, lenv - 1)
+    quest = statistic.v[number]
+    answers = statistic.v0[number]
+    buttons = [
+        types.InlineKeyboardButton(text=answers[2], callback_data="Да"),
+        types.InlineKeyboardButton(text=answers[1], callback_data="Нет"),
+        types.InlineKeyboardButton(text=answers[0], callback_data="Нет"),
+        types.InlineKeyboardButton(text="Еще вопрос", callback_data="Еще1")
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    await call.message.answer(quest, reply_markup=keyboard)
 
 # Доходы
 
@@ -177,17 +206,6 @@ async def send_random_value(call: types.CallbackQuery):
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await call.message.answer(statistic.s[randint(0, statistic.lens - 1)], reply_markup=keyboard)
-
-
-@dp.callback_query_handler(text="Да")
-async def send_random_value(call: types.CallbackQuery):
-    await call.message.answer("Верно. За 3 года хранения этих денег вклад вырос бы в 1,331 раз.")
-
-
-@dp.callback_query_handler(text="Нет")
-async def send_random_value(call: types.CallbackQuery):
-    await call.message.answer("Неверно. За 3 года хранения этих денег вклад вырос бы в 1,331 раз. запланированный и фактический проценты за первый год не отличаются. Пусть к началу второго года после начисления процентов на счете было х руб.")
-    return
 
 
 @dp.message_handler(text="Дота")
