@@ -44,15 +44,7 @@ async def start_handler(message: types.Message):
         reply_markup=keyboard
     )
     db_add_user(user_id, f'@{alias}')
-
     current_savings = db_get_savings(user_id)
-    print(f"| {current_savings} |")
-    if current_savings is None:
-        print("| WTf |")
-        await Savings.savings.set()
-    else:
-        print("OK")
-
 
 @dp.message_handler(state=Savings.savings)
 async def init_expenses(message: types.Message, state: FSMContext):
@@ -84,14 +76,22 @@ async def start_handler_1(message: types.Message):
 
 @dp.callback_query_handler(text="Да")
 async def send_random_value(call: types.CallbackQuery):
-    await call.message.answer("Верно.")
+    await call.message.answer("Верно. За 3 года хранения этих денег вклад вырос бы в 1.331 раз")
 
 
 @dp.callback_query_handler(text="Нет")
 async def send_random_value(call: types.CallbackQuery):
+    await call.message.answer("Неверно. За 3 года хранения этих денег вклад вырос бы в 1.331 раз. Запланированный и фактический проценты за первый год не отличаются. Тогда ответ равен 220")
+    return
+@dp.callback_query_handler(text="Да1")
+async def send_random_value(call: types.CallbackQuery):
+    await call.message.answer("Верно.")
+
+
+@dp.callback_query_handler(text="Нет1")
+async def send_random_value(call: types.CallbackQuery):
     await call.message.answer("Неверно. ")
     return
-
 
 @dp.callback_query_handler(text="Еще1")
 async def send_random_value(call: types.CallbackQuery):
@@ -100,9 +100,9 @@ async def send_random_value(call: types.CallbackQuery):
     quest = statistic.v[number]
     answers = statistic.v0[number]
     buttons = [
-        types.InlineKeyboardButton(text=answers[2], callback_data="Да"),
-        types.InlineKeyboardButton(text=answers[1], callback_data="Нет"),
-        types.InlineKeyboardButton(text=answers[0], callback_data="Нет"),
+        types.InlineKeyboardButton(text=answers[2], callback_data="Да1"),
+        types.InlineKeyboardButton(text=answers[1], callback_data="Нет1"),
+        types.InlineKeyboardButton(text=answers[0], callback_data="Нет1"),
         types.InlineKeyboardButton(text="Еще вопрос", callback_data="Еще1")
     ]
     keyboard = types.InlineKeyboardMarkup(row_width=2)
