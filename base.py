@@ -10,9 +10,12 @@ def db_add_user(user_id: int, username: str):
     conn.commit()
 
 
-def db_update_income(user_id: int, income: float):
+def db_update_income(user_id: int, income: float, datetime: float, date: str, type_id: int):
     cursor.execute(
         "UPDATE user SET income = income + ? WHERE user_id = ?", (income, user_id,))
+    conn.commit()
+    cursor.execute(
+        "INSERT INTO trati_and_dohod (user_id, datatime, date, type, value) VALUES (?, ?, ?, ? ,?)", (user_id, datetime, date, type_id, income,))
     conn.commit()
 
 
@@ -23,9 +26,12 @@ def db_get_income(user_id: int):
     return current_savings[0][0]
 
 
-def db_update_expenses(user_id: int, expenses: float):
+def db_update_expenses(user_id: int, expenses: float, datetime: float, date: str, type_id: int):
     cursor.execute(
         "UPDATE user SET expenses = expenses + ? WHERE user_id = ?", (expenses, user_id,))
+    conn.commit()
+    cursor.execute(
+        "INSERT INTO trati_and_dohod (user_id, datatime, date, type, value) VALUES (?, ?, ?, ? ,?)", (user_id, datetime, date, type_id, expenses,))
     conn.commit()
 
 

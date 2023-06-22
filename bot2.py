@@ -52,6 +52,28 @@ async def init_expenses(message: types.Message, state: FSMContext):
     else:
         await message.answer("Введите цифрами :")
 
+
+@dp.message_handler(commands=["profile"])
+async def start_handler(message: types.Message):
+    user_id = message.from_user.id
+    alias = message.from_user.username
+    logging.info(f'{user_id} {alias} {time.asctime()}')
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add("Доходы", "Расходы")
+    keyboard.add("Сбережения", "Статистика")
+    keyboard.add("Способы заработка")
+    await message.answer(f"Привет, @{alias}, я @adunhelperbot, цифровой финансовый помощник для подростков. Моя цель помочь вам составить бюджет, указывая на ваши доходы и расходы. Это позволит вам лучше понять, как распределять свои деньги и контролировать свои финансы.", reply_markup=keyboard)
+    db_add_user(user_id, f'@{alias}')
+
+    current_savings = db_get_savings(user_id)
+    print(f"| {current_savings} |")
+    if current_savings is None:
+        print("| WTf |")
+        await Savings.savings.set()
+    else:
+        print("OK")
+
+
 # Доходы
 
 
@@ -64,8 +86,10 @@ async def with_puree(message: types.Message):
 @dp.message_handler(state=Incomes.income)
 async def input_incomes(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
+    datatime = time.time()
+    date = time.ctime(datatime)
     if message.text.isdigit():
-        db_update_income(user_id, float(message.text))
+        db_update_income(user_id, float(message.text), datatime, date, 1)
         await state.finish()
         current_income = db_get_income(user_id)
         db_update_savings(user_id)
@@ -85,8 +109,10 @@ async def with_puree(message: types.Message):
 @dp.message_handler(state=Expenses.expenses)
 async def input_expenses(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
+    datatime = time.time()
+    date = time.ctime(datatime)
     if message.text.isdigit():
-        db_update_expenses(user_id, float(message.text))
+        db_update_expenses(user_id, float(message.text), datatime, date, 0)
         await state.finish()
         current_expenses = db_get_expenses(user_id)
         db_update_savings(user_id)
