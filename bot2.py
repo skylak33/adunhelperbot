@@ -4,7 +4,8 @@ import asyncio
 import config
 from base import *
 from states import *
-
+from random import *
+import statistic
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -25,9 +26,9 @@ async def start_handler(message: types.Message):
     alias = message.from_user.username
     logging.info(f'{user_id} {alias} {time.asctime()}')
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add("Доходы", "Расходы")
-    keyboard.add("Сбережения", "Статистика")
-    keyboard.add("Способы заработка")
+    keyboard.add("Доходы", "Расходы", "Сбережения")
+    keyboard.add("Советы", "Способы заработка")
+    keyboard.add("Проверка финансовой грамотности")
     await message.answer(f"Привет, @{alias}, я @adunhelperbot, цифровой финансовый помощник для подростков. Моя цель помочь вам составить бюджет, указывая на ваши доходы и расходы. Это позволит вам лучше понять, как распределять свои деньги и контролировать свои финансы.", reply_markup=keyboard)
     db_add_user(user_id, f'@{alias}')
 
@@ -59,9 +60,9 @@ async def start_handler(message: types.Message):
     alias = message.from_user.username
     logging.info(f'{user_id} {alias} {time.asctime()}')
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add("Доходы", "Расходы")
-    keyboard.add("Сбережения", "Статистика")
-    keyboard.add("Способы заработка")
+    keyboard.add("Доходы", "Расходы", "Сбережения")
+    keyboard.add("Советы", "Способы заработкаx")
+    keyboard.add("Проверка финансовой грамотности")
     await message.answer(f"Привет, @{alias}, я @adunhelperbot, цифровой финансовый помощник для подростков. Моя цель помочь вам составить бюджет, указывая на ваши доходы и расходы. Это позволит вам лучше понять, как распределять свои деньги и контролировать свои финансы.", reply_markup=keyboard)
     db_add_user(user_id, f'@{alias}')
 
@@ -154,6 +155,16 @@ async def send_random_value(call: types.CallbackQuery):
 async def send_random_value(call: types.CallbackQuery):
     await call.message.answer("Заработок в реальной жизни. Это простая работа, где тебя могут взять без опыта работы и образования.\n"
                               "https://hh.ru/  на этом сайте ты сможешь найти подработку на свой вкус.")
+
+
+@dp.message_handler(text="Советы")
+async def cmd_inline_url_1(message: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Eще", callback_data="Еще"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await message.answer(statistic.s[randint(0, statistic.lens - 1)], reply_markup=keyboard)
 
 
 if __name__ == "__main__":

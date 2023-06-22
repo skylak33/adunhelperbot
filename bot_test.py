@@ -43,14 +43,14 @@ async def cmd_inline_url(message: types.CallbackQuery):
     await message.answer("Я могу предложить тебе 2 способа заработка. Первый  способ заработка. Биржа фриланса и онлайн игры — это место, где ты можешь заработать в интернете. Второй способ заработка. офлайн-работа для подростка - это простые работы (уборка, покраска, расклейка объявлений), на которые  можно устроиться без проблем.", reply_markup=keyboard)
 
 
-@dp.message_handler(text="Статистика")
+@dp.message_handler(text="Советы")
 async def cmd_inline_url_1(message: types.CallbackQuery):
     buttons = [
         types.InlineKeyboardButton(text="Eще", callback_data="Еще"),
     ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await message.answer(statistic.s[0], reply_markup=keyboard)
+    await message.answer(statistic.s[randint(0, statistic.lens - 1)], reply_markup=keyboard)
 
 
 @dp.callback_query_handler(text="Онлайн")
@@ -71,7 +71,12 @@ async def send_random_value(call: types.CallbackQuery):
 
 @dp.callback_query_handler(text="Еще")
 async def send_random_value(call: types.CallbackQuery):
-    cmd_inline_url_1("Статистика")
+    buttons = [
+        types.InlineKeyboardButton(text="Eще", callback_data="Еще"),
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await call.message.answer(statistic.s[randint(0, statistic.lens - 1)], reply_markup=keyboard)
 
 if __name__ == "__main__":
     executor.start_polling(dp)
